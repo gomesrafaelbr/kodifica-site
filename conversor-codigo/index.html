@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kodifica | Conversor de Código</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+    <div class="container py-5">
+        <h1 class="mb-2 text-center">Conversor de Código</h1>
+        <p class="text-center text-muted mb-4">Transforme trechos entre FOX, C#, JS, TS...</p>
+
+        <div class="row">
+            <div class="col-md-6 mb-4">
+                <label for="selectSourceLanguage">Origem</label>
+                <select class="form-control mb-2" id="selectSourceLanguage">
+                    <option value="1">FOX</option>
+                    <option value="2">C#</option>
+                    <option value="3">Normalizar</option>
+                    <option value="4">Typescript Property</option>
+                </select>
+                <textarea class="form-control" id="sourceText" rows="15" placeholder="Código de origem"></textarea>
+            </div>
+
+            <div class="col-md-6 mb-4">
+                <label for="selectTargetLanguage">Destino</label>
+                <select class="form-control mb-2" id="selectTargetLanguage">
+                    <option value="1">C# Property</option>
+                    <option value="2">C# DataColumn</option>
+                    <option value="3">C# DataRow</option>
+                    <option value="4">JavaScript (Criar propriedades)</option>
+                    <option value="5">JavaScript (Inicializar propriedades)</option>
+                    <option value="6">C# CTOR (Clonar propriedades)</option>
+                    <option value="7">C# CTOR (Inicializar strings)</option>
+                    <option value="8">Typescript Property</option>
+                    <option value="9">Typescript Construtor</option>
+                </select>
+                <textarea class="form-control bg-light" id="targetText" rows="15" placeholder="Código gerado" readonly></textarea>
+            </div>
+        </div>
+
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <button class="btn btn-primary btn-block" id="translateButton">Converter</button>
+            </div>
+            <div class="col-md-6" id="pnlPrefix">
+                <div class="form-row align-items-center justify-content-center">
+                    <label class="mr-2 mb-1">Replace</label>
+                    <input type="text" class="form-control mb-1 mr-2 prefix" id="prefix-from" placeholder="De">
+                    <label class="mr-2 mb-1">To</label>
+                    <input type="text" class="form-control mb-1 mr-2 prefix" id="prefix-to" placeholder="Para">
+                    <button class="btn btn-success mb-1 mr-2" id="btnReplace">Ok</button>
+                    <button class="btn btn-danger mb-1" id="btnClear">Limpar</button>
+                </div>
+            </div>
+        </div>
+
+        <hr class="my-5">
+
+        <h4 class="mb-3 text-center">Atribuição de propriedades em sequência numérica</h4>
+        <form class="form-inline justify-content-center flex-wrap mb-3">
+            <div class="form-group mr-2">
+                <input type="text" class="form-control" id="inp-prefix" placeholder="Prefixo Propriedade">
+            </div>
+            <div class="form-group mr-2">
+                <input type="text" class="form-control" id="inp-column" placeholder="Prefixo Coluna">
+            </div>
+            <div class="form-group mr-2">
+                <input type="number" class="form-control" id="inp-total" placeholder="0" style="width: 80px;">
+            </div>
+            <button type="button" class="btn btn-outline-primary mr-2" id="btn-generate">Gerar</button>
+            <button type="button" class="btn btn-outline-danger" id="btn-clear-prop">Limpar</button>
+        </form>
+
+        <textarea class="form-control" id="whiteboard" rows="5" readonly></textarea>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="js/translator.js"></script>
+</body>
+
+</html>

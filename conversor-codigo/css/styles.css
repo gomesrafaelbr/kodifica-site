@@ -1,0 +1,26 @@
+#pnlPrefix{
+    text-align: center;
+}
+
+input[type="text"]{
+    margin: 0 5px;
+    border-radius: 5px;
+    width: 150px;
+}
+
+.jumbotron{
+    background-color: #708090;
+    border: 1px solid;
+}
+
+textarea.form-control{
+    border: 1px solid;
+}
+
+#sourceText, #targetText{
+	height: 250px;
+}
+
+#inp-total{
+	width: 70px;
+}
