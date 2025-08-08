@@ -2,41 +2,106 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <title>Lista de Compras</title>
 <style>
 :root{
-  --bg: #0f172a;
-  --card: #111827;
-  --muted: #94a3b8;
-  --text: #e5e7eb;
-  --accent: #7c3aed;
-  --danger: #ef4444;
-  --border: #1f2937;
+  --bg:#0f172a; --card:#111827; --muted:#94a3b8; --text:#e5e7eb;
+  --accent:#7c3aed; --danger:#ef4444; --border:#1f2937;
 }
 *{box-sizing:border-box}
-body{margin:0;background:linear-gradient(180deg,#0b1220,#0a0f1a 60%);color:var(--text);font-family:sans-serif}
-header{padding:10px;background:var(--bg);display:flex;justify-content:flex-end}
-.total-pill{display:flex;align-items:center;gap:10px;padding:10px 14px;border:1px solid var(--border);border-radius:12px;background:var(--card);font-weight:bold}
-main{max-width:1000px;margin:20px auto;padding:10px}
-.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:10px;margin-bottom:20px}
-.toolbar{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:10px}
-.btn{padding:8px 10px;border-radius:8px;border:1px solid var(--border);cursor:pointer;background:#0b1220;color:var(--text)}
+html,body{height:100%}
+body{
+  margin:0; color:var(--text); font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Arial,sans-serif;
+  background:linear-gradient(180deg,#0b1220,#0a0f1a 60%);
+  -webkit-text-size-adjust:100%;
+}
+header{
+  position:sticky; top:0; z-index:10;
+  padding:10px;
+  padding-top:calc(10px + env(safe-area-inset-top));
+  background:var(--bg); display:flex; justify-content:flex-end;
+  border-bottom:1px solid var(--border);
+}
+.total-pill{
+  display:flex; align-items:center; gap:10px; padding:10px 14px;
+  border:1px solid var(--border); border-radius:12px; background:var(--card); font-weight:600;
+}
+main{max-width:1000px; margin:20px auto; padding:16px}
+.card{
+  background:var(--card); border:1px solid var(--border); border-radius:12px;
+  padding:12px; margin-bottom:20px
+}
+.toolbar{
+  display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap; margin-bottom:12px
+}
+.btn{
+  padding:12px 14px; border-radius:10px; border:1px solid var(--border); cursor:pointer;
+  background:#0b1220; color:var(--text); font-weight:600; line-height:1;
+  min-height:44px; /* alvo de toque iOS */
+  font-size:16px;  /* evita zoom no foco no iOS */
+}
 .btn.primary{background:var(--accent)}
 .btn.danger{background:var(--danger)}
-.grid-head,.row{display:grid;gap:6px;align-items:center;grid-template-columns:32px 1fr 80px 110px 110px 40px 40px}
-.grid-head{font-weight:bold;color:var(--muted);margin-bottom:6px}
-.rows{display:flex;flex-direction:column;gap:6px}
-.row{border:1px solid var(--border);padding:6px;border-radius:8px;background:#0a1324}
-.row input{width:100%;padding:6px;border-radius:6px;border:1px solid var(--border);background:var(--card);color:var(--text)}
-.row .total{display:block;text-align:right;font-weight:bold;padding:6px;border:1px solid var(--border);border-radius:6px;background:#0a162a}
-.row button{height:38px;border-radius:8px;border:1px solid var(--border);background:#0b1220;color:var(--text);cursor:pointer}
-.summary{margin-top:10px;color:var(--muted)}
-.io-actions{display:flex;gap:6px;margin-bottom:6px;flex-wrap:wrap}
-textarea{width:100%;min-height:120px;background:var(--card);color:var(--text);border:1px solid var(--border);border-radius:8px;padding:8px}
-@media (max-width:760px){
+/* Desktop/Tablet default */
+.grid-head,.row{
+  display:grid; gap:8px; align-items:center;
+  grid-template-columns:32px 1.4fr 90px 120px 120px 44px 44px;
+}
+.grid-head{font-weight:700; color:var(--muted); margin-bottom:8px}
+.rows{display:flex; flex-direction:column; gap:8px}
+.row{
+  border:1px solid var(--border); padding:8px; border-radius:10px; background:#0a1324
+}
+.row input{
+  width:100%; padding:10px; border-radius:8px; border:1px solid var(--border);
+  background:var(--card); color:var(--text); font-size:16px;
+}
+.row .total{
+  display:block; text-align:right; font-weight:700; padding:10px;
+  border:1px solid var(--border); border-radius:8px; background:#0a162a
+}
+.row button{
+  height:44px; border-radius:10px; border:1px solid var(--border);
+  background:#0b1220; color:var(--text); cursor:pointer; font-size:16px
+}
+.summary{margin-top:10px; color:var(--muted)}
+.io-actions{display:flex; gap:8px; margin-bottom:8px; flex-wrap:wrap}
+textarea{
+  width:100%; min-height:140px; background:var(--card); color:var(--text);
+  border:1px solid var(--border); border-radius:10px; padding:10px; font-size:16px
+}
+
+/* ====== MOBILE (iPhone 13 ~390px) ====== */
+@media (max-width: 640px){
+  main{padding:12px}
   .grid-head{display:none}
-  .row{grid-template-columns:32px 1fr 1fr 1fr 40px 40px}
+
+  /* 3 colunas: [check] [coluna esquerda] [coluna direita] */
+  .row{
+    grid-template-columns:28px 1fr 1fr;
+    grid-template-areas:
+      "check name  name"
+      "qty   price total"
+      "add   remove total";
+    gap:8px;
+  }
+  .row > :first-child{grid-area:check}
+  .row .name{grid-area:name; min-width:0}
+  .row .qty{grid-area:qty}
+  .row .price{grid-area:price}
+  .row .total{grid-area:total; align-self:stretch; display:flex; align-items:center; justify-content:flex-end}
+  .row .add{grid-area:add}
+  .row .remove{grid-area:remove}
+
+  /* Ajuste visual de botões na toolbar */
+  .toolbar{gap:8px}
+  .toolbar > div{display:flex; gap:8px; flex-wrap:wrap}
+}
+
+/* Só aplica hover em quem tem hover (evita efeito “grudento” no mobile) */
+@media (hover: hover){
+  .btn:hover{filter:brightness(1.08)}
 }
 </style>
 </head>
@@ -47,6 +112,7 @@ textarea{width:100%;min-height:120px;background:var(--card);color:var(--text);bo
     <span id="grandTotal">R$ 0,00</span>
   </div>
 </header>
+
 <main>
   <section class="card">
     <div class="toolbar">
@@ -58,12 +124,15 @@ textarea{width:100%;min-height:120px;background:var(--card);color:var(--text);bo
         <button class="btn danger" id="clearAll">Limpar tudo</button>
       </div>
     </div>
+
     <div class="grid-head">
       <div></div><div>Item</div><div>Qtd.</div><div>Preço (R$)</div><div>Total</div><div>+</div><div>🗑</div>
     </div>
+
     <div class="rows" id="rows"></div>
     <div class="summary" id="summary"></div>
   </section>
+
   <section class="card">
     <h2>Exportação / Importação (JSON)</h2>
     <div class="io-actions">
@@ -76,27 +145,43 @@ textarea{width:100%;min-height:120px;background:var(--card);color:var(--text);bo
     <textarea id="jsonArea" placeholder='Cole JSON aqui ou clique em Exportar para ver os dados.'></textarea>
   </section>
 </main>
+
 <template id="rowTemplate">
   <div class="row">
-    <div><input type="checkbox" class="done"/></div>
-    <input type="text" class="name" placeholder="Ex: Café" />
-    <input type="number" class="qty" min="0" step="1" value="1" />
-    <input type="number" class="price" min="0" step="0.01" value="0" />
-    <span class="total">R$ 0,00</span>
-    <button class="add" title="Adicionar novo item abaixo">➕</button>
-    <button class="remove" title="Remover item">🗑</button>
+    <div><input type="checkbox" class="done" aria-label="Concluir item"/></div>
+
+    <!-- Dica: manter font-size 16px evita zoom no iOS -->
+    <input type="text" class="name" placeholder="Ex: Café" autocomplete="off" />
+
+    <!-- Inteiro: teclado numérico -->
+    <input type="number" class="qty" min="0" step="1" value="1"
+           inputmode="numeric" pattern="[0-9]*" aria-label="Quantidade" />
+
+    <!-- Decimal: teclado com vírgula/ponto conforme o iOS -->
+    <input type="number" class="price" min="0" step="0.01" value="0"
+           inputmode="decimal" aria-label="Preço" />
+
+    <span class="total" aria-label="Total do item">R$ 0,00</span>
+
+    <button class="add" title="Adicionar novo item abaixo" aria-label="Adicionar novo item">➕</button>
+    <button class="remove" title="Remover item" aria-label="Remover item">🗑</button>
   </div>
 </template>
+
 <script>
 document.addEventListener('DOMContentLoaded', () => {
   const rowsEl = document.getElementById('rows');
   const summaryEl = document.getElementById('summary');
   const jsonArea = document.getElementById('jsonArea');
   const ioStatus = document.getElementById('ioStatus');
+  const grandTotalEl = document.getElementById('grandTotal');
   const currency = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
 
   // Helpers
-  const parseNum = v => (Number.isFinite(Number(v)) ? Number(v) : 0);
+  const parseNum = v => {
+    const n = Number(v);
+    return Number.isFinite(n) ? n : 0;
+  };
   const rowToData = row => ({
     done: row.querySelector('.done').checked,
     name: row.querySelector('.name').value.trim(),
@@ -126,10 +211,12 @@ document.addEventListener('DOMContentLoaded', () => {
       updateSummary();
     };
 
+    // Evita valores negativos via roda do número (mobile raramente, mas desktop sim)
+    qty.addEventListener('input', () => { if (parseNum(qty.value) < 0) qty.value = 0; updateState(); });
+    price.addEventListener('input', () => { if (parseNum(price.value) < 0) price.value = 0; updateState(); });
+
     done.addEventListener('change', updateState);
     name.addEventListener('input', updateSummary);
-    qty.addEventListener('input', updateState);
-    price.addEventListener('input', updateState);
 
     removeBtn.addEventListener('click', () => { node.remove(); updateGrandTotal(); updateSummary(); });
     addBtn.addEventListener('click', () => { addRow(); });
@@ -144,8 +231,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const getAllRows = () => Array.from(rowsEl.querySelectorAll('.row'));
 
   function updateGrandTotal(){
-    const sum = getAllRows().reduce((acc, r) => { const d = rowToData(r); return acc + (d.qty * d.price); }, 0);
-    document.getElementById('grandTotal').textContent = currency.format(sum);
+    const sum = getAllRows().reduce((acc, r) => {
+      const d = rowToData(r);
+      return acc + (d.qty * d.price);
+    }, 0);
+    grandTotalEl.textContent = currency.format(sum);
   }
   function updateSummary(){
     const items = getAllRows().map(rowToData);
@@ -154,10 +244,35 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // JSON
-  function setStatus(msg){ if(ioStatus){ ioStatus.textContent = msg; setTimeout(()=> ioStatus.textContent = '', 2000); } }
-  function exportJSON(){ jsonArea.value = JSON.stringify(getAllRows().map(rowToData), null, 2); setStatus('Exportado'); }
-  async function copyJSON(){ if(!jsonArea.value) exportJSON(); try{ await navigator.clipboard.writeText(jsonArea.value); setStatus('Copiado'); }catch(e){ jsonArea.select(); document.execCommand('copy'); setStatus('Selecionado para copiar'); } }
-  function importJSON(){ try{ const arr = JSON.parse(jsonArea.value); if(!Array.isArray(arr)) throw 0; rowsEl.replaceChildren(); arr.forEach(d => addRow(d)); updateGrandTotal(); updateSummary(); setStatus('Importado'); } catch(e){ setStatus('JSON inválido'); } }
+  function setStatus(msg){
+    if(!ioStatus) return;
+    ioStatus.textContent = msg;
+    setTimeout(()=> ioStatus.textContent = '', 2000);
+  }
+  function exportJSON(){
+    jsonArea.value = JSON.stringify(getAllRows().map(rowToData), null, 2);
+    setStatus('Exportado');
+  }
+  async function copyJSON(){
+    if(!jsonArea.value) exportJSON();
+    try{
+      await navigator.clipboard.writeText(jsonArea.value);
+      setStatus('Copiado');
+    }catch(e){
+      jsonArea.select(); document.execCommand('copy');
+      setStatus('Selecionado para copiar');
+    }
+  }
+  function importJSON(){
+    try{
+      const arr = JSON.parse(jsonArea.value);
+      if(!Array.isArray(arr)) throw 0;
+      rowsEl.replaceChildren();
+      arr.forEach(d => addRow(d));
+      updateGrandTotal(); updateSummary();
+      setStatus('Importado');
+    }catch(e){ setStatus('JSON inválido'); }
+  }
   function clearJSON(){ jsonArea.value=''; setStatus('JSON limpo'); }
 
   // Botões topo
@@ -170,13 +285,11 @@ document.addEventListener('DOMContentLoaded', () => {
       {name:'Café',qty:1,price:16.50},
     ];
     preset.forEach(addRow);
-    updateGrandTotal();
-    updateSummary();
+    updateGrandTotal(); updateSummary();
   };
   document.getElementById('clearAll').onclick = () => {
-    rowsEl.replaceChildren(); // remove TODAS as linhas de forma confiável
-    updateGrandTotal();
-    updateSummary();
+    rowsEl.replaceChildren();
+    updateGrandTotal(); updateSummary();
   };
 
   // Botões JSON
