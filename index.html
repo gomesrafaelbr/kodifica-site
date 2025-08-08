@@ -4,45 +4,84 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Kodifica | MVPs</title>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+  <!-- Bootstrap -->
   <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet"/>
+
   <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #f8f9fa;
+    }
+
+    header {
+      background: linear-gradient(90deg, #4f46e5, #3b82f6);
+      color: white;
+      padding: 2rem 0;
+      text-align: center;
+    }
+
+    header h1 {
+      font-weight: 600;
+    }
+
+    .card {
+      border: none;
+      border-radius: 12px;
+      transition: all 0.2s ease-in-out;
+    }
+
     .card:hover {
-      transform: scale(1.02);
-      transition: all 0.2s;
+      transform: translateY(-5px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    }
+
+    .card-icon {
+      font-size: 2rem;
+      color: #4f46e5;
+      margin-bottom: 1rem;
     }
   </style>
 </head>
 <body>
-  <div class="container py-5">
-    <h1 class="text-center mb-4">Kodifica</h1>
-    <p class="text-center text-muted mb-5">Selecione um MVP para testar</p>
 
+  <!-- Cabeçalho -->
+  <header>
+    <h1>Kodifica</h1>
+    <p class="mb-0">Selecione um MVP para testar</p>
+  </header>
+
+  <!-- Conteúdo -->
+  <div class="container py-5">
     <div class="row justify-content-center">
+
+      <!-- MVP 1 -->
       <div class="col-md-4 mb-4">
         <a href="conversor-codigo/index.html" class="text-decoration-none text-dark">
-          <div class="card shadow-sm h-100">
-            <div class="card-body">
-              <h5 class="card-title">Conversor de Código</h5>
-              <p class="card-text">Transforma trechos entre FOX, C#, JS e TypeScript.</p>
-            </div>
+          <div class="card shadow-sm h-100 text-center p-4">
+            <div class="card-icon">💻</div>
+            <h5 class="card-title">Conversor de Código</h5>
+            <p class="card-text">Transforma trechos entre FOX, C#, JS e TypeScript.</p>
           </div>
         </a>
       </div>
 
-      <!-- Outros MVPs aqui -->
-      <!--
+      <!-- MVP 2 -->
       <div class="col-md-4 mb-4">
-        <a href="outro-mvp/index.html" class="text-decoration-none text-dark">
-          <div class="card shadow-sm h-100">
-            <div class="card-body">
-              <h5 class="card-title">Outro MVP</h5>
-              <p class="card-text">Descrição curta do projeto aqui.</p>
-            </div>
+        <a href="lista-compras/index.html" class="text-decoration-none text-dark">
+          <div class="card shadow-sm h-100 text-center p-4">
+            <div class="card-icon">🛒</div>
+            <h5 class="card-title">Lista de Compras</h5>
+            <p class="card-text">Calcula os itens do carrinho em tempo real.</p>
           </div>
         </a>
       </div>
-      -->
+
     </div>
   </div>
+
 </body>
 </html>

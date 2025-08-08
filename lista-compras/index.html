@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Lista de Compras</title>
+<style>
+:root{
+  --bg: #0f172a;
+  --card: #111827;
+  --muted: #94a3b8;
+  --text: #e5e7eb;
+  --accent: #7c3aed;
+  --danger: #ef4444;
+  --border: #1f2937;
+}
+*{box-sizing:border-box}
+body{margin:0;background:linear-gradient(180deg,#0b1220,#0a0f1a 60%);color:var(--text);font-family:sans-serif}
+header{padding:10px;background:var(--bg);display:flex;justify-content:flex-end}
+.total-pill{display:flex;align-items:center;gap:10px;padding:10px 14px;border:1px solid var(--border);border-radius:12px;background:var(--card);font-weight:bold}
+main{max-width:1000px;margin:20px auto;padding:10px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:10px;margin-bottom:20px}
+.toolbar{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.btn{padding:8px 10px;border-radius:8px;border:1px solid var(--border);cursor:pointer;background:#0b1220;color:var(--text)}
+.btn.primary{background:var(--accent)}
+.btn.danger{background:var(--danger)}
+.grid-head,.row{display:grid;gap:6px;align-items:center;grid-template-columns:32px 1fr 80px 110px 110px 40px 40px}
+.grid-head{font-weight:bold;color:var(--muted);margin-bottom:6px}
+.rows{display:flex;flex-direction:column;gap:6px}
+.row{border:1px solid var(--border);padding:6px;border-radius:8px;background:#0a1324}
+.row input{width:100%;padding:6px;border-radius:6px;border:1px solid var(--border);background:var(--card);color:var(--text)}
+.row .total{display:block;text-align:right;font-weight:bold;padding:6px;border:1px solid var(--border);border-radius:6px;background:#0a162a}
+.row button{height:38px;border-radius:8px;border:1px solid var(--border);background:#0b1220;color:var(--text);cursor:pointer}
+.summary{margin-top:10px;color:var(--muted)}
+.io-actions{display:flex;gap:6px;margin-bottom:6px;flex-wrap:wrap}
+textarea{width:100%;min-height:120px;background:var(--card);color:var(--text);border:1px solid var(--border);border-radius:8px;padding:8px}
+@media (max-width:760px){
+  .grid-head{display:none}
+  .row{grid-template-columns:32px 1fr 1fr 1fr 40px 40px}
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="total-pill" aria-live="polite">
+    <small>Total Geral</small>
+    <span id="grandTotal">R$ 0,00</span>
+  </div>
+</header>
+<main>
+  <section class="card">
+    <div class="toolbar">
+      <div>
+        <button class="btn primary" id="addItem">+ Adicionar item</button>
+        <button class="btn" id="addPreset">Sugestão rápida</button>
+      </div>
+      <div>
+        <button class="btn danger" id="clearAll">Limpar tudo</button>
+      </div>
+    </div>
+    <div class="grid-head">
+      <div></div><div>Item</div><div>Qtd.</div><div>Preço (R$)</div><div>Total</div><div>+</div><div>🗑</div>
+    </div>
+    <div class="rows" id="rows"></div>
+    <div class="summary" id="summary"></div>
+  </section>
+  <section class="card">
+    <h2>Exportação / Importação (JSON)</h2>
+    <div class="io-actions">
+      <button class="btn" id="exportJson">Exportar JSON</button>
+      <button class="btn" id="copyJson">Copiar JSON</button>
+      <button class="btn" id="importJson">Importar JSON</button>
+      <button class="btn danger" id="clearJson">Limpar JSON</button>
+      <span class="status" id="ioStatus"></span>
+    </div>
+    <textarea id="jsonArea" placeholder='Cole JSON aqui ou clique em Exportar para ver os dados.'></textarea>
+  </section>
+</main>
+<template id="rowTemplate">
+  <div class="row">
+    <div><input type="checkbox" class="done"/></div>
+    <input type="text" class="name" placeholder="Ex: Café" />
+    <input type="number" class="qty" min="0" step="1" value="1" />
+    <input type="number" class="price" min="0" step="0.01" value="0" />
+    <span class="total">R$ 0,00</span>
+    <button class="add" title="Adicionar novo item abaixo">➕</button>
+    <button class="remove" title="Remover item">🗑</button>
+  </div>
+</template>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const rowsEl = document.getElementById('rows');
+  const summaryEl = document.getElementById('summary');
+  const jsonArea = document.getElementById('jsonArea');
+  const ioStatus = document.getElementById('ioStatus');
+  const currency = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
+
+  // Helpers
+  const parseNum = v => (Number.isFinite(Number(v)) ? Number(v) : 0);
+  const rowToData = row => ({
+    done: row.querySelector('.done').checked,
+    name: row.querySelector('.name').value.trim(),
+    qty: parseNum(row.querySelector('.qty').value),
+    price: parseNum(row.querySelector('.price').value)
+  });
+
+  function dataToRow(data){
+    const node = document.getElementById('rowTemplate').content.firstElementChild.cloneNode(true);
+    const done = node.querySelector('.done');
+    const name = node.querySelector('.name');
+    const qty = node.querySelector('.qty');
+    const price = node.querySelector('.price');
+    const total = node.querySelector('.total');
+    const addBtn = node.querySelector('.add');
+    const removeBtn = node.querySelector('.remove');
+
+    done.checked = !!data.done;
+    name.value = data.name ?? '';
+    qty.value = data.qty ?? 1;
+    price.value = data.price ?? 0;
+
+    const updateState = () => {
+      total.textContent = currency.format(parseNum(qty.value) * parseNum(price.value));
+      node.classList.toggle('done', done.checked);
+      updateGrandTotal();
+      updateSummary();
+    };
+
+    done.addEventListener('change', updateState);
+    name.addEventListener('input', updateSummary);
+    qty.addEventListener('input', updateState);
+    price.addEventListener('input', updateState);
+
+    removeBtn.addEventListener('click', () => { node.remove(); updateGrandTotal(); updateSummary(); });
+    addBtn.addEventListener('click', () => { addRow(); });
+
+    updateState();
+    return node;
+  }
+
+  function addRow(data={done:false,name:'',qty:1,price:0}){
+    rowsEl.appendChild(dataToRow(data));
+  }
+  const getAllRows = () => Array.from(rowsEl.querySelectorAll('.row'));
+
+  function updateGrandTotal(){
+    const sum = getAllRows().reduce((acc, r) => { const d = rowToData(r); return acc + (d.qty * d.price); }, 0);
+    document.getElementById('grandTotal').textContent = currency.format(sum);
+  }
+  function updateSummary(){
+    const items = getAllRows().map(rowToData);
+    const count = items.length, done = items.filter(i=>i.done).length, pend = count - done;
+    summaryEl.textContent = `${count} item(s) • ${pend} pendente(s) • ${done} concluído(s)`;
+  }
+
+  // JSON
+  function setStatus(msg){ if(ioStatus){ ioStatus.textContent = msg; setTimeout(()=> ioStatus.textContent = '', 2000); } }
+  function exportJSON(){ jsonArea.value = JSON.stringify(getAllRows().map(rowToData), null, 2); setStatus('Exportado'); }
+  async function copyJSON(){ if(!jsonArea.value) exportJSON(); try{ await navigator.clipboard.writeText(jsonArea.value); setStatus('Copiado'); }catch(e){ jsonArea.select(); document.execCommand('copy'); setStatus('Selecionado para copiar'); } }
+  function importJSON(){ try{ const arr = JSON.parse(jsonArea.value); if(!Array.isArray(arr)) throw 0; rowsEl.replaceChildren(); arr.forEach(d => addRow(d)); updateGrandTotal(); updateSummary(); setStatus('Importado'); } catch(e){ setStatus('JSON inválido'); } }
+  function clearJSON(){ jsonArea.value=''; setStatus('JSON limpo'); }
+
+  // Botões topo
+  document.getElementById('addItem').onclick = () => addRow();
+  document.getElementById('addPreset').onclick = () => {
+    const preset = [
+      {name:'Arroz 5kg',qty:1,price:24.9},
+      {name:'Feijão',qty:2,price:7.49},
+      {name:'Leite (sem lactose)',qty:6,price:4.99},
+      {name:'Café',qty:1,price:16.50},
+    ];
+    preset.forEach(addRow);
+    updateGrandTotal();
+    updateSummary();
+  };
+  document.getElementById('clearAll').onclick = () => {
+    rowsEl.replaceChildren(); // remove TODAS as linhas de forma confiável
+    updateGrandTotal();
+    updateSummary();
+  };
+
+  // Botões JSON
+  document.getElementById('exportJson').onclick = exportJSON;
+  document.getElementById('copyJson').onclick = copyJSON;
+  document.getElementById('importJson').onclick = importJSON;
+  document.getElementById('clearJson').onclick = clearJSON;
+
+  // Start
+  addRow();
+  updateGrandTotal();
+  updateSummary();
+});
+</script>
+</body>
+</html>
